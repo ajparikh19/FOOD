@@ -1,0 +1,14 @@
+.side-menu__item.active {
+  background-color: #1565c0  !important; /* Highlight color */
+  color: white !important; /* Change text color */
+  border-radius: 5px; /* Smooth edges */
+}
+
+.side-menu__item.active .side-menu__icon {
+  color: white !important; /* Change icon color */
+}
+
+.side-menu__item.active .side-menu__label {
+  font-weight: bold; /* Make text bold */
+  color: white !important; /* Change icon color */
+}

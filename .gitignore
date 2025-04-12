@@ -1,0 +1,48 @@
+# Node modules
+node_modules/
+
+# Build directory
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+/.pnp
+.pnp.js
+
+# Parcel-bundler cache
+.cache/
+
+# Next.js build output
+.next/
+
+# Nuxt.js build output
+.nuxt/
+dist/
+
+# Gatsby files
+.cache/
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS files
+.DS_Store
+
+# Test coverage
+coverage/
+
+# Miscellaneous
+*.log
+*.gz
+*.log.*.gz

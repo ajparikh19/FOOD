@@ -1,0 +1,17 @@
+.doc-card-body{
+    border: 1px solid green; /* Green border */
+    box-shadow: 0 4px 6px rgba(21, 21, 21, 0.3); /* Green shadow */
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+.doc-card{
+    border-radius: 20px;
+}
+
+.doc-card-body:hover {
+    box-shadow: 0 8px 12px rgba(0, 128, 0, 0.5); /* Darker green shadow on hover */
+}
+
+.doctor-image{
+    border-radius: 50px;
+}

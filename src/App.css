@@ -1,0 +1,525 @@
+:root{
+
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+/* Example for active sidebar item */
+.side-menu__item.active {
+  background-color: #007bff;  /* Active background color */
+  color: white;  /* Active text color */
+}
+.side-menu__icon.active {
+  color: white;  /* Active icon color */
+}
+
+.width-700px{
+  width: 700px;
+}
+.width-300px{
+  width: 300px ;
+}
+
+.app-sidebar{
+  border: none;
+}
+.cl-sidebar{
+  color: #000 !important;
+
+}
+.hv-sidebar:hover {
+  background-color: #1565c0 !important;
+}
+
+.hv-sidebar:hover > .cl-sidebar{
+  color: #fff !important;
+}
+.campaign-participent-item {
+  color: #fff;
+  padding: 15px;
+  background-color: #111C43;
+  border-radius: 8px;
+}
+
+.campaign-participent-item.active {
+  background-color: #FFBC00;
+  color: #111C43;
+}
+/* .dropdown{
+  position: absolute !important;
+} */
+
+.campaign-participent-item+.campaign-participent-item {
+  margin-top: 10px;
+}
+
+.campaign-participent-name {
+  font-size: 16px;
+}
+
+.campaign-participent-coupon-number {
+  font-size: 14px;
+}
+
+.campaign-btn {
+  display: block;
+  border: none;
+  width: 100%;
+  margin-top: 15px;
+  padding: 20px;
+  font-size: 14px;
+  color: #333333;
+  font-weight: 700;
+  background-color: #FFBC00;
+  border-radius: 8px;
+}
+
+.campaign-winners table {
+  border: 1px solid #111C43;
+}
+
+.campaign-winners table thead th {
+  background-color: #111C43;
+  color: #fff;
+  padding: 15px;
+}
+.icon-style {
+  border: 2px solid;
+  border-radius: 3px;
+  padding: 2px;
+}
+
+.fnt span{
+  font-size: 10px;
+}
+
+.btn1 ,.btn-primary{
+  background-color: #111C43 !important;
+}
+.btn-primary:hover, .btn-primary.active{
+  background-color: white !important;
+  border: 2px solid #111C43 !important;
+  color:#111C43 !important;
+}
+
+
+
+.bs-stepper-circle {
+  display: inline-flex;
+  align-content: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  padding: .5em 0;
+  margin: .25rem;
+  line-height: 1em;
+  color: #fff;
+  background-color: #6c757d;
+  border-radius: 1em;
+}
+
+.bs-stepper .step-trigger {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #6c757d;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  background-color: transparent;
+  border: none;
+  border-radius: .25rem;
+  transition: background-color .15s ease-out, color .15s ease-out;
+}
+
+/* Add this to your styles */
+.bs-stepper .step.active .bs-stepper-circle {
+  background-color: #007bff; /* Blue color for active step */
+  color: #fff; /* White color for text inside the circle */
+}
+
+.bs-stepper .step.active .bs-stepper-label {
+  color: #007bff; /* Blue color for the label of the active step */
+}
+
+.bs-stepper .step {
+  transition: all 0.3s ease; /* Smooth transition when steps change */
+}
+.otp {
+  width: 40px;  /* Adjust width to make the input boxes uniform */
+  text-align: center;  /* Center the input text */
+  font-size: 1.5rem;  /* Increase font size for better readability */
+}
+
+.otp:focus {
+  border-color: #007bff;  /* Optional: Change border color on focus */
+}
+
+th{
+  background-color: rgba(var(--purple-rgb), .1) !important;
+
+}
+
+.btn-icon:hover{
+  border: 1px solid #111C43;
+}
+.ml-60px{
+  margin-left: -60px !important;
+}
+
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.text-theme{
+  color: #111C43;
+}
+.width-700px{
+  width: 700px;
+}
+.width-300px{
+  width: 300px ;
+}
+.slide-menu {
+  display: none;
+  transition: max-height 0.3s ease-out;
+}
+
+/* Show slide menu when active */
+.slide-menu.active {
+  display: block;
+
+}
+
+.l-10px li i{
+  margin: 0 !important;;
+  padding-left: 6px;
+}
+.l-10px li a span {
+  padding-left: 9px;
+}
+
+.app-sidebar{
+  border: none;
+}
+.cl-sidebar{
+  color: #000 !important;
+
+}
+.hv-sidebar:hover {
+  background-color: #1565c0 !important;
+}
+
+
+
+.hv-sidebar:hover > .cl-sidebar{
+  color: #fff !important;
+}
+.campaign-participent-item {
+  color: #fff;
+  padding: 15px;
+  background-color: #111C43;
+  border-radius: 8px;
+}
+
+.campaign-participent-item.active {
+  background-color: #FFBC00;
+  color: #111C43;
+}
+
+.campaign-participent-item+.campaign-participent-item {
+  margin-top: 10px;
+}
+
+.campaign-participent-name {
+  font-size: 16px;
+}
+
+.campaign-participent-coupon-number {
+  font-size: 14px;
+}
+
+.campaign-btn {
+  display: block;
+  border: none;
+  width: 100%;
+  margin-top: 15px;
+  padding: 20px;
+  font-size: 14px;
+  color: #333333;
+  font-weight: 700;
+  background-color: #FFBC00;
+  border-radius: 8px;
+}
+
+.campaign-winners table {
+  border: 1px solid #111C43;
+}
+
+.campaign-winners table thead th {
+  background-color: #111C43;
+  color: #fff;
+  padding: 15px;
+}
+.icon-style {
+  border: 2px solid;
+  border-radius: 3px;
+  padding: 2px;
+}
+
+.fnt span{
+  font-size: 10px;
+}
+
+.btn1 ,.btn-primary{
+  background-color: #111C43 !important;
+}
+.btn-primary:hover, .btn-primary.active{
+  background-color: white !important;
+  border: 2px solid #111C43 !important;
+  color:#111C43 !important;
+}
+
+.brder-none{
+  border: none !important;
+}
+
+
+
+.bs-stepper-circle {
+  display: inline-flex;
+  align-content: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  padding: .5em 0;
+  margin: .25rem;
+  line-height: 1em;
+  color: #fff;
+  background-color: #6c757d;
+  border-radius: 1em;
+}
+
+.bs-stepper .step-trigger {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #6c757d;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  background-color: transparent;
+  border: none;
+  border-radius: .25rem;
+  transition: background-color .15s ease-out, color .15s ease-out;
+}
+
+/* Add this to your styles */
+.bs-stepper .step.active .bs-stepper-circle {
+  background-color: #007bff; /* Blue color for active step */
+  color: #fff; /* White color for text inside the circle */
+}
+
+.bs-stepper .step.active .bs-stepper-label {
+  color: #007bff; /* Blue color for the label of the active step */
+}
+
+.bs-stepper .step {
+  transition: all 0.3s ease; /* Smooth transition when steps change */
+}
+.otp {
+  width: 40px;  /* Adjust width to make the input boxes uniform */
+  text-align: center;  /* Center the input text */
+  font-size: 1.5rem;  /* Increase font size for better readability */
+}
+
+.otp:focus {
+  border-color: #007bff;  /* Optional: Change border color on focus */
+}
+
+th{
+  background-color: rgba(var(--purple-rgb), .1) !important;
+
+}
+
+.btn-icon:hover{
+  border: 1px solid #111C43;
+}
+.ml-60px{
+  margin-left: -60px !important;
+}
+
+.w-50px{
+  width: 50px;
+}
+
+@media (max-width:768px){
+  .w-50px{
+    width: 30px;
+  }
+  .mt-10px{
+    margin-top: 10px;
+  }
+}
+.card.custom-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+.table th,
+.table td {
+  vertical-align: middle;
+}
+.table-active {
+  background-color: #f7f7f7;
+}
+.avatar-xl img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.ptr{
+  cursor: pointer;
+}
+
+.side-menu__item.active {
+  background-color: #f0f7ff !important;
+  color: #0d6efd !important;
+}
+
+.side-menu__item.active i,
+.side-menu__item.active span {
+  color: #ffff !important;
+}
+
+.slide.is-expanded .slide-menu {
+  display: block;
+}
+
+.side-menu__item:hover {
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.side-menu__item i {
+  transition: transform 0.3s ease;
+}
+
+.slide-menu {
+  transition: all 0.3s ease;
+}
+
+.slide-menu .side-menu__item.active {
+  background-color: #1565c0 !important;
+}
+
+.custom-dropdown {
+  position: relative;
+  /* border: 1px solid #ccc; */
+  padding: 2px 5px;
+  /* cursor:  pointer; */
+  margin-top: 13px;
+}
+.placeholder-text{
+ font-size: 11px;
+ padding: 2px;
+}
+
+.selected-box {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.selected-box span {
+  color: #555;
+}
+
+.custom-dropdown .dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background-color: white;
+  z-index: 10;
+  margin-top: 2px;
+  padding: 0;
+  list-style-type: none;
+  border-radius: 5px;
+}
+
+.custom-dropdown:focus {
+  border-color: var(--primary05) !important; 
+  outline: 0 ;
+  box-shadow: none;
+}
+
+.custom-dropdown .dropdown-list .dropdown-item {
+  padding: 5px;
+  cursor: pointer;
+  /* font-size: 12px; */
+  font-weight: 600;
+}
+
+.custom-dropdown .dropdown-list .dropdown-item.selected {
+  background-color: var(--primary02);
+  color: var(--primary-color);
+  /* border-bottom: 1px solid var(--primary02); */
+}
+
+.btn-close{
+  font-size: 8px;
+  /* --bs-btn-close-color: var(--primary09) !important; */
+  opacity: 1;
+}
+.custom-dropdown.open .dropdown-list {
+  display: block;
+}
+
+.custom-dropdown .dropdown-list .dropdown-item:hover {
+  background-color: var(--primary02);
+  color: var(--primary-color);
+}
+
+.placeholder-text {
+  pointer-events: none;
+  user-select: none;
+}
+.custom-dropdown .dropdown-list .dropdown-item {
+  user-select: none;
+}
+.custome-react-select{
+  border-radius: 5px;
+  min-height: 30px !important;
+}
+
+/* .form-control:focus,
+.form-control {
+    border-color: #313133;
+}
+
+tr {
+    border-color: rgba(79, 79, 82, 0.322);
+} */
