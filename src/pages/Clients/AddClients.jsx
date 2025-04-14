@@ -94,15 +94,22 @@ export default function ClientCreate() {
       API.get(`locations/states/${formData?.state}/cities`)
         .then((res) => {
           console.log("Cities API Response:", res.data);
-          const citiesData = res.data?.data || res.data || [];
-        
-          const cityOptions = (res.data?.data || []).map(city => ({
-            value: String(city?.cityId || ''),
-            label: city?.name || 'Unknown City'
-          }));
+          const citiesData = res.data?.data?.data || res.data?.data || [];
+          
+          const cityOptions = citiesData.map(city => {
+            if (!city) return null;
+            return {
+              value: city.cityId ? String(city.cityId) : '',
+              label: city.name || 'Unknown City'
+            };
+          }).filter(Boolean);
+          
           setCities(cityOptions);
         })
-        .catch(() => toast.error("Failed to load cities"))
+        .catch(() => {
+          toast.error("Failed to load cities");
+          setCities([]);
+        })
         .finally(() => setLoading(false));
     } else {
       setCities([]);
@@ -206,7 +213,7 @@ export default function ClientCreate() {
       value: formData.city,
       component: (
         <SelectCity
-          cities={cities}
+          cities={cities || []}
           value={formData.city}
           onChange={handleChange}
           disabled={!formData.state}

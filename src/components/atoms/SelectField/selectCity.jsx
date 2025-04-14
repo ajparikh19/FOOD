@@ -25,6 +25,8 @@ const SelectCity = ({ cities, value, onChange, disabled }) => {
       disabled={disabled} 
       searchable
       placeholder="Search and select a city..."
+      labelField="label"
+      valueField="value"
 
     />
   );
