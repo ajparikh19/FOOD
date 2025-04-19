@@ -42,39 +42,7 @@ const GenericTable = ({
     setLocalRowsPerPage(rowsPerPage);
   }, [rowsPerPage]);
 
-  const items = [
-    {
-      label: "NEW OPD APPOINTMENT",
-      color: "rgba(116, 192, 252, 0.33)",
-      value: "New OPD Appointment",
-    },
-    { label: "EMERGENCY", color: "rgba(12, 11, 11, 0.25)", value: "emergency" },
-    {
-      label: "FOLLOW UP OPD APPOINTMENT",
-      color: "rgba(255, 212, 59, 0.42)",
-      value: "Follow Up OPD Appointment",
-    },
-    {
-      label: "SURGERY POST-OP",
-      color: "rgba(240, 128, 128, 0.62)",
-      value: "Surgery Post Oprative Appointment",
-    },
-    {
-      label: "SURGERY PRE-OP",
-      color: "rgba(100, 240, 81, 0.48)",
-      value: "Surgery Pre Oprative Appointment",
-    },
-    {
-      label: "STITCHES REMOVAL",
-      color: "rgba(189, 99, 253, 0.43)",
-      value: "stitches removal",
-    },
-  ];
-
-  const getCategoryColor = (category) => {
-    const matchedItem = items?.find((item) => item?.value === category);
-    return matchedItem ? matchedItem?.color : "transparent";
-  };
+  
 
   const handleRowsPerPageChange = (e) => {
     const newRowsPerPage = Number(e.target.value);
@@ -159,7 +127,10 @@ const GenericTable = ({
       );
     }
 
-    if (accessor.includes("date") || accessor === "dob") {
+    if (
+      typeof accessor === 'string' && 
+      (accessor.includes("date") || accessor === "dob")
+    ) {
       return formatDateInHyphen(item[accessor]);
     }
 
@@ -260,7 +231,7 @@ const GenericTable = ({
                         <li>
                           <button
                             className="dropdown-item text-warning"
-                            onClick={() => onEdit(item?._id)}
+                            onClick={() => onEdit(item?.id || item?._id)}
                           >
                             <i className="ri-edit-line me-2"></i>Edit
                           </button>
@@ -270,7 +241,7 @@ const GenericTable = ({
                         <li>
                           <button
                             className="dropdown-item text-danger"
-                            onClick={() => onDelete(item?._id)}
+                            onClick={() => onDelete(item?._id || item?.id)}
                           >
                             <i className="ri-delete-bin-line me-2"></i>Delete
                           </button>

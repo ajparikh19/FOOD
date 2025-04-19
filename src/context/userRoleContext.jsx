@@ -25,7 +25,6 @@ export const UserRoleProvider = ({ children }) => {
   };
 
   const value = { userRole, updateUserRole, hasPermission };
-  console.log("value in context",value);
   return (
     <UserRoleContext.Provider value={value}>
       {children}

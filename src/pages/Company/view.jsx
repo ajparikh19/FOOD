@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDocumentTitle } from "@uidotdev/usehooks";
-import { clientColumns } from "./ClientModel.jsx"; // Define the appropriate columns for clients
+
 import routes from "../../constants/routesConstants.js";
 import Button from "../../components/atoms/Button/Button.jsx";
 import Export from "../../components/utils/exports";
@@ -12,9 +12,11 @@ import { addSequentialIds } from "../../components/utils/tableUtils";
 import Search from "../../components/search/Search.jsx";
 import ActiveFiltersDisplay from "../../components/search/FilterDisplay.jsx";
 import GenericTable from "../../components/Tables/DataTable.jsx";
+import { CompanyColumns } from "./CompanyModel.jsx";
+import { daDK } from "@mui/x-date-pickers/locales";
 
-export default function Clients() {
-  useDocumentTitle("Clients");
+export default function Company() {
+  useDocumentTitle("Company");
   const navigate = useNavigate();
   const clientFilterOptions = ["All", "Name", "Status", "Company", "Email"];
 
@@ -30,7 +32,7 @@ export default function Clients() {
 
   // Fetch client data with pagination, search, and sorting
   const {
-    data: initialClients,
+    data: initialCompany,
     loading,
     currPage,
     rowsPerPage,
@@ -48,7 +50,7 @@ export default function Clients() {
     handleSearch,
     error,
   } = useFetchData({
-    endpoint: "client",
+    endpoint: "companies",
     initialSortConfig: { key: "_id", direction: "desc" },
     initialRowsPerPage: 10,
     searchParams,
@@ -62,40 +64,41 @@ export default function Clients() {
     }),
   });
 
+
   if (error) {
     return (
-      <p className="text-danger">Error loading clients: {error.message}</p>
+      <p className="text-danger">Error loading Company: {error.message}</p>
     );
   }
 
-  const [clients, setClients] = useState([]);
-
-  // useEffect(() => {
-  //   if (initialClients && initialClients.length > 0) {
-  //     console.log("Received clients data:", initialClients); // Debug log
-  //     setClients(initialClients);
-  //   } else {
-  //     console.log("No clients data received");
-  //     setClients([]);
-  //   }
-  // }, [initialClients]);
+  const [Company, setCompany] = useState([]);
 
   useEffect(() => {
-    const clientsWithSeqId = addSequentialIds(
-      initialClients,
+    if (initialCompany && initialCompany.length > 0) {
+      console.log("Received Company data:", initialCompany); // Debug log
+      setCompany(initialCompany);
+    } else {
+      console.log("No Company data received");
+      setCompany([]);
+    }
+  }, [initialCompany]);
+
+  useEffect(() => {
+    const CompanyWithSeqId = addSequentialIds(
+      initialCompany,
       currPage,
       rowsPerPage
     );
-    setClients(clientsWithSeqId);
-  }, [initialClients, currPage, rowsPerPage]);
+    setCompany(CompanyWithSeqId);
+  }, [initialCompany, currPage, rowsPerPage]);
 
   const handleToggleStatus = async (id, currentStatus) => {
     await toggleStatus({
       id,
       currentStatus,
       moduleName: "Client",
-      entityList: clients,
-      setEntityList: setClients,
+      entityList: Company,
+      setEntityList: setCompany,
     });
   };
 
@@ -104,14 +107,13 @@ export default function Clients() {
   // };
 
   const handleEdit = (id) => {
-    navigate(routes.EditClient.replace(":id", id));
+    
+    console.log("Editing Company ID:", id);
+    navigate(routes.EditCompany.replace(":id", id));
   };
+  
 
   const handleView = (id) => {
-    if (!id) {
-      console.error("No ID provided for view action");
-      return;
-    }
     console.log("Viewing client ID:", id, "Type:", typeof id);
     navigate(routes.ViewClient.replace(":id", id));
   };
@@ -126,10 +128,14 @@ export default function Clients() {
   };
 
   const handleClientDelete = async (id) => {
+    if (!id) {
+      console.error("Delete failed: No ID provided");
+      return;
+    }
     try {
-      await handleDelete(id, "client", setClients, clients);
+      await handleDelete(id, "companies", setCompany, Company);
     } catch (error) {
-      toast.error("Failed to delete client");
+      toast.error("Failed to delete company");
     }
   };
 
@@ -147,7 +153,7 @@ export default function Clients() {
         <div className="my-3 d-flex align-items-center"></div>
         <div className="card custom-card">
           <div className="card-header justify-content-between">
-            <div className="card-title">Client Details</div>
+            <div className="card-title">Company Details</div>
             <Search
               addFilter={addFilter}
               filterOptions={clientFilterOptions}
@@ -157,9 +163,9 @@ export default function Clients() {
               onFilterSelect={(filterKey) => setSelectedFilter(filterKey)}
             />
             <div className="d-flex justify-content-end gap-2 align-items-center">
-              <Export data={clients} fileName="ClientData" />
+              <Export data={Company} fileName="ClientData" />
               <Button
-                label="Add New Client"
+                label="Add New Company"
                 icon="ri-add-line"
                 to={routes.AddClient}
                 variant="primary-light"
@@ -173,16 +179,14 @@ export default function Clients() {
           />
           <div className="card-body p-2">
             <GenericTable
-              columns={clientColumns} // Define the columns in ClientModel.js
-              data={clients}
+              columns={CompanyColumns} // Define the columns in ClientModel.js
+              data={Company}
               onEdit={handleEdit}
               onDelete={(id) => {
-                // Immediately remove from UI
-                setClients((prev) => prev.filter((c) => c._id !== id));
-
-                // Then call API
+                setCompany((prev) => prev.filter((c) => c._id !== id));
                 handleClientDelete(id);
               }}
+              
               onView={handleView}
               onToggleStatus={handleToggleStatus}
               onPageChange={handlePageChange}
@@ -193,8 +197,9 @@ export default function Clients() {
               sortConfig={sortConfig}
               totalPages={totalPages}
               loading={loading}
-              handleAddCompnay={handleAddCompnay}
+          
               totalItems={totalItems}
+              
             />
           </div>
         </div>

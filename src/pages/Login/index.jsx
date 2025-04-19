@@ -67,7 +67,6 @@ export default function Login() {
       });
 
       
-      console.log('responce in login',response);
       setLoading(false);
       if (response?.status === 200) {
         login(response);

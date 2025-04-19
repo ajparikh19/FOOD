@@ -54,7 +54,12 @@ const Search = ({ addFilter, filterOptions, searchKey, setSearchKey }) => {
 
 Search.propTypes = {
   addFilter: PropTypes.func.isRequired, // Function to add a filter
-  filterOptions: PropTypes.arrayOf(PropTypes.string).isRequired, // Dropdown filter options
+  filterOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired, // Dropdown filter options
 };
 
 export default Search;

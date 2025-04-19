@@ -8,6 +8,5 @@ export const clientColumns = [
   { Header: "Marital Status", accessor: "maritalStatus" },
   { Header: "State", accessor: "state" },
   { Header: "Pincode", accessor: "pincode" },
-  
  
 ];

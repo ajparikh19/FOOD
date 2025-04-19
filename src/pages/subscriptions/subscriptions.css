@@ -1,0 +1,121 @@
+/* Subscription Cards */
+.subscription-card-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    padding: 1rem 0;
+  }
+  
+  .subscription-card {
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .subscription-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .subscription-card-header {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .subscription-card-price {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #2d3436;
+  }
+  
+  .subscription-card-duration {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .subscription-card-features {
+    padding: 1.5rem;
+  }
+  
+  .subscription-card-features li {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    gap: 0.75rem;
+  }
+  
+  .subscription-card-actions {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+  }
+  
+  /* Improved Button Styles */
+  .subscription-card-actions .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+  }
+  
+  .subscription-card-actions .btn-view {
+    color: #4361ee;
+    background-color: rgba(67, 97, 238, 0.1);
+    border: 1px solid rgba(67, 97, 238, 0.2);
+  }
+  
+  .subscription-card-actions .btn-view:hover {
+    background-color: rgba(67, 97, 238, 0.2);
+    color: #3651d4;
+    transform: translateY(-1px);
+  }
+  
+  .subscription-card-actions .btn-edit {
+    color: #0a9396;
+    background-color: rgba(10, 147, 150, 0.1);
+    border: 1px solid rgba(10, 147, 150, 0.2);
+  }
+  
+  
+  .subscription-card-actions .btn-edit:hover {
+    background-color: rgba(10, 147, 150, 0.2);
+    color: #087f82;
+    transform: translateY(-1px);
+  }
+  
+  .subscription-card-actions .btn-delete {
+    color: #e63946;
+    background-color: rgba(230, 57, 70, 0.1);
+    border: 1px solid rgba(230, 57, 70, 0.2);
+  }
+  
+  
+  .subscription-card-actions .btn-delete:hover {
+    background-color: rgba(230, 57, 70, 0.2);
+    color: #d42836;
+    transform: translateY(-1px);
+  }
+
+  .subscription-card-actions .btn i {
+    font-size: 0.9em;
+    line-height: 1;
+    vertical-align: middle;
+  }
+  
+  /* Pagination */
+  .subscription-pagination {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+  }

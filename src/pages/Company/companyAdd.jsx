@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 // import API from "../../../http/api";
 import { ToastContainer, toast } from "react-toastify";
-
 import {
   validateRequired,
   validateEmail,
@@ -18,9 +17,13 @@ import routes from "../../constants/routesConstants";
 
 export default function AddCompany() {
   const navigate = useNavigate();
-  const { id: companyId } = useParams(); // Get companyId from URL params
-  const { clientId: clientId } = useParams(); // Get companyId from URL params
-  const isEditMode = !!companyId;
+  const location = useLocation();
+  const params = useParams();
+
+  // Check if we're in edit mode by looking at the URL path
+  const isEditMode = location.pathname.includes("/edit/");
+  const companyId = isEditMode ? params.id : null;
+  const clientId = !isEditMode ? params.clientId : null;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,7 +36,7 @@ export default function AddCompany() {
     address: "",
     gstNumber: "24ABCDE1234F1Z5",
     logo: "",
-    documents: "",
+    documents: [],
   });
 
   // Fetch imaplan details for editing
@@ -43,29 +46,24 @@ export default function AddCompany() {
         setLoading(true);
         try {
           //  const { data, error } = await fetchEntityDetails("implants", { id: companyId });
-          const { data, error } = await fetchEntityDetails("client", companyId);
+          const { data, error } = await fetchEntityDetails(
+            "companies",
+            companyId
+          );
           // const { data, error } = await API.get(`/client/${id}`);
 
           if (error) {
             setError(error);
           } else if (data) {
-            setFormData((prevData) => ({
-              ...prevData,
-              fullName: data.fullName || "",
-              email: data.email || "",
-              phoneNumber: data.phoneNumber || "",
-              birthDate: data.birthDate?.split("T")[0] || "",
-              anniversaryDate: data.anniversaryDate?.split("T")[0] || "",
-              pincode: data.pincode || "",
+            setFormData({
+              name: data.name || "",
               address: data.address || "",
-              state: data.state || "",
-              city: data.city || "",
-              photo: null, // assuming no photo from data
-              gender: data.gender || "Male",
-              maritalStatus: data.maritalStatus || "Unmarried",
-            }));
+              gstNumber: data.gstNumber || "",
+              logo: null,
+              documents: [],
+            });
 
-            if (data.photoUrl) setPhotoPreview(data.photoUrl);
+            if (data.logo) setPhotoPreview(data.logo);
           }
         } catch (error) {
           toast.error("failed to fetch client data ");
@@ -88,19 +86,33 @@ export default function AddCompany() {
   };
 
   // Handle file change for photo upload
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setPhotoPreview(reader.result);
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         photoUrl: reader.result,
+  //         photo: file,
+  //       }));
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const { name, files } = e.target;
+    if (name === "logo" && files[0]) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result);
-        setFormData((prev) => ({
-          ...prev,
-          photoUrl: reader.result,
-          photo: file,
-        }));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(files[0]);
+      setFormData((prev) => ({ ...prev, logo: files[0] }));
+    } else if (name === "documents") {
+      setFormData((prev) => ({ ...prev, documents: files }));
     }
   };
 
@@ -134,96 +146,78 @@ export default function AddCompany() {
     {
       label: "Logo",
       type: "file",
-      name: "logoe",
+      name: "logo",
       onChange: handleFileChange,
       accept: "image/*",
       preview: photoPreview,
     },
+    {
+      label: "Documents",
+      type: "file",
+      name: "documents",
+      onChange: handleFileChange,
+      accept: "image/*,application/pdf",
+      multiple: true, // 👈 Add this flag
+      required: true,
+    },
   ].filter(Boolean);
 
   // Handle form submission
+
   const handleSubmit = async (data) => {
     setLoading(true);
     setError(null);
-    setSuccess(null);
-    console.log("data is:", data);
-
     try {
       const formDataToSend = new FormData();
-
       formDataToSend.append("ownerId", clientId);
+      formDataToSend.append("name", data.name);
+      formDataToSend.append("address", data.address);
+      formDataToSend.append("gstNumber", data.gstNumber);
+      if (data.logo) formDataToSend.append("logo", data.logo);
+      if (data.documents?.length > 0) {
+        Array.from(data.documents).forEach((doc) => {
+          formDataToSend.append("documents", doc);
+        });
+      }
 
-      Object.keys(data).forEach((key) => {
-        if (key === "photo" && data[key]) {
-          formDataToSend.append("photo", data[key]);
-        } else if (key === "photoUrl") {
-          // Skip photoUrl as it's just for preview
-          return;
-        } else {
-          formDataToSend.append(key, data[key]);
-        }
+      const endpoint = isEditMode ? `companies/${companyId}` : "companies";
+      const method = isEditMode ? API.put : API.post;
+      const response = await method(endpoint, formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const endpoint = companyId ? `companies/${companyId}` : `companies`;
-
-      let response;
-
-      if (companyId) {
-        response = await API.put(endpoint, formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      } else {
-        response = await API.post(endpoint, formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      }
+      console.log("responce for compney", response);
 
       if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.message);
-        navigate(routes?.Clients);
+        toast.success(response?.message || "Success");
+        navigate(routes.Clients);
       } else {
-        toast.error(response?.message);
+        toast.error(response?.message || "Failed to save");
       }
     } catch (err) {
-      setError(err.message || "An error occurred while submitting the form");
-      toast.error(error.message || "An error occurred");
+      toast.error(err.message || "Error submitting form");
     } finally {
       setLoading(false);
     }
   };
-
-  const title = companyId ? "Edit Company" : "Add Company";
-  const buttonLabel = loading
-    ? companyId
-      ? "Updating..."
-      : "Adding..."
-    : companyId
-    ? "Update"
-    : "Save";
 
   return (
     <div>
       {loading ? (
         <Loader />
       ) : (
-        <>
-          {/* <ToastContainer /> */}
-          <GenericForm
-            title={title}
-            fields={formFields}
-            onSubmit={handleSubmit}
-            buttonLabel={buttonLabel}
-            loading={loading}
-            error={error}
-            success={success}
-            data={formData}
-            onChange={handleChange}
-          />
-        </>
+        <GenericForm
+          title={isEditMode ? "Edit Company" : "Add Company"}
+          fields={formFields}
+          onSubmit={handleSubmit}
+          buttonLabel={
+            loading ? "Processing..." : isEditMode ? "Update" : "Save"
+          }
+          loading={loading}
+          error={error}
+          data={formData}
+          onChange={handleChange}
+        />
       )}
     </div>
   );

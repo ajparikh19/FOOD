@@ -4,7 +4,6 @@ import CheckboxField from "../atoms/CheckBox/CheckboxField";
 import Button from "../atoms/Button/Button";
 import Loader from "../atoms/loader/Loader";
 
-
 const GenericForm = ({
   fields,
   onSubmit,
@@ -18,26 +17,28 @@ const GenericForm = ({
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => {
       acc[field.name] =
-        data[field.name] || field.defaultValue || (field.type === "checkbox" ? false : "");
+        data[field.name] ||
+        field.defaultValue ||
+        (field.type === "checkbox" ? false : "");
       return acc;
     }, {})
   );
 
   const [formErrors, setFormErrors] = useState({});
-  const [imagePreview, setImagePreview] = useState(null); // State for image preview
-
-  useEffect(() => {
-    if (data?.image) {
-      setImagePreview(data.image);
-    }
-  }, [data]);
+  const [previews, setPreviews] = useState({
+    photo: null,
+    documents: [],
+  });
 
   const calculateAge = (dateString) => {
     const today = new Date();
     const birthDate = new Date(dateString);
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     return isNaN(age) || age < 0 ? "" : age; // Return empty string if invalid date
@@ -45,9 +46,10 @@ const GenericForm = ({
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
-    const newValue = type === "checkbox" ? checked : type === "file" ? files[0] : value;
+    const newValue =
+      type === "checkbox" ? checked : type === "file" ? files[0] : value;
 
-    console.log("newValue:" , newValue);
+    
 
     if (type === "file") {
       const file = files[0];
@@ -62,7 +64,6 @@ const GenericForm = ({
       setFormData((prev) => ({
         ...prev,
         [name]: newValue,
-        
       }));
     }
 
@@ -81,9 +82,9 @@ const GenericForm = ({
       }));
     }
 
-    // userName 
+    // userName
     if (type === "number" && name === "phoneNumber") {
-      const username = newValue
+      const username = newValue;
       setFormData((prev) => ({
         ...prev,
         [name]: newValue,
@@ -103,6 +104,43 @@ const GenericForm = ({
     }));
   };
 
+  const handleFileChange = (e) => {
+    const { name, files, multiple } = e.target;
+
+    if (multiple) {
+      const fileArray = Array.from(files);
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: fileArray,
+      }));
+
+      // Set preview only for image types
+      const imagePreviews = fileArray.map((file) =>
+        file.type.startsWith("image/") ? URL.createObjectURL(file) : null
+      );
+
+      setPreviews((prev) => ({
+        ...prev,
+        [name]: imagePreviews,
+      }));
+    } else {
+      const file = files[0];
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: file,
+      }));
+
+      setPreviews((prev) => ({
+        ...prev,
+        [name]: file?.type.startsWith("image/")
+          ? URL.createObjectURL(file)
+          : null,
+      }));
+    }
+  };
+
   const validateField = (name, value) => {
     const field = fields.find((f) => f.name === name);
     if (field?.required && !value) {
@@ -113,26 +151,48 @@ const GenericForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Validate fields
     const errors = fields.reduce((acc, field) => {
       const error = validateField(field.name, formData[field.name]);
       if (error) acc[field.name] = error;
       return acc;
     }, {});
-    
+
     setFormErrors(errors);
-  
+
     if (Object.keys(errors).length === 0) {
       // Ensure null values are converted to empty strings before submission
       const cleanedData = Object.fromEntries(
         Object.entries(formData).map(([key, value]) => [key, value ?? ""])
       );
-  
+
       onSubmit(cleanedData); // Submit cleaned data
     }
   };
-  
+
+  const FormGroup2 = ({
+    label,
+    type,
+    name,
+    onChange,
+    required,
+    accept,
+    multiple,
+  }) => (
+    <div className="form-group">
+      <label>{label}</label>
+      <input
+        type={type}
+        name={name}
+        onChange={onChange}
+        required={required}
+        accept={accept}
+        multiple={multiple}
+        className="form-control"
+      />
+    </div>
+  );
 
   return (
     <div className=" app-content main-content">
@@ -149,7 +209,9 @@ const GenericForm = ({
                   <div key={index} className="col-md-4 my-2">
                     {field.type === "checkbox" ? (
                       <CheckboxField
-                      label={field.required ? `${field.label} *` : field.label}
+                        label={
+                          field.required ? `${field.label} *` : field.label
+                        }
                         name={field.name}
                         checked={formData[field.name]}
                         onChange={handleChange}
@@ -175,12 +237,15 @@ const GenericForm = ({
                           ))}
                         </div>
                         {formErrors[field.name] && (
-                          <p className="text-danger" style={{ fontSize: "11px", marginBottom: "0px" }}>
+                          <p
+                            className="text-danger"
+                            style={{ fontSize: "11px", marginBottom: "0px" }}
+                          >
                             {formErrors[field.name]}
                           </p>
                         )}
                       </div>
-                    )  : field.type === "select" && field.component ? (
+                    ) : field.type === "select" && field.component ? (
                       <div className="col-md-12">
                         <label className="form-label">{field.label}</label>
                         {field.component}
@@ -196,24 +261,8 @@ const GenericForm = ({
                           </p>
                         )}
                       </div>
-                    ) : field.type === "date" && field?.label === "Birth Date" ? (
-                      <div className="col-md-12">
-                        <label className="form-label">{field.label}</label>
-                        <input
-                          type="date"
-                          name={field.name}
-                          value={formData[field.name]}
-                          onChange={handleChange}
-                          className="form-control"
-                          max={field.label === "Birth Date" ? new Date().toISOString().split("T")[0] : undefined}
-                        />
-                        {formErrors[field.name] && (
-                          <p className="text-danger" style={{ fontSize: "11px", marginBottom: "0px" }}>
-                            {formErrors[field.name]}
-                          </p>
-                        )}
-                      </div>
-                    ): field.type === "date" && field?.label === "Anniversary Date" ? (
+                    ) : field.type === "date" &&
+                      field?.label === "Birth Date" ? (
                       <div className="col-md-12">
                         <label className="form-label">{field.label}</label>
                         <input
@@ -223,36 +272,72 @@ const GenericForm = ({
                           onChange={handleChange}
                           className="form-control"
                           max={
-                            formData?.birthDate
-                              ? new Date(formData.birthDate).toISOString().split("T")[0]
-                              : new Date().toISOString().split("T")[0]
+                            field.label === "Birth Date"
+                              ? new Date().toISOString().split("T")[0]
+                              : undefined
                           }
                         />
                         {formErrors[field.name] && (
-                          <p className="text-danger" style={{ fontSize: "11px", marginBottom: "0px" }}>
+                          <p
+                            className="text-danger"
+                            style={{ fontSize: "11px", marginBottom: "0px" }}
+                          >
                             {formErrors[field.name]}
                           </p>
                         )}
                       </div>
-                    ): field.type === "file" ? (
+                    ) : field.type === "date" &&
+                      field?.label === "Anniversary Date" ? (
                       <div className="col-md-12">
-                        <FormGroup
-                        label={field.required ? `${field.label} *` : field.label}
-                          type={field.type}
+                        <label className="form-label">{field.label}</label>
+                        <input
+                          type="date"
                           name={field.name}
+                          value={formData[field.name]}
                           onChange={handleChange}
-                          required={field.required}
+                          className="form-control"
+                          min={
+                            formData?.birthDate
+                              ? new Date(formData.birthDate).toISOString().split("T")[0]
+                              : undefined
+                          }
                         />
                         {formErrors[field.name] && (
-                          <p className="text-danger" style={{ fontSize: "11px", marginBottom: "0px" }}>
+                          <p
+                            className="text-danger"
+                            style={{ fontSize: "11px", marginBottom: "0px" }}
+                          >
                             {formErrors[field.name]}
                           </p>
                         )}
                       </div>
-                    ) 
-                    : (
+                    ) : field.type === "file" ? (
+                      <div className="col-md-12">
+                        <FormGroup2
+                          label={
+                            field.required ? `${field.label} *` : field.label
+                          }
+                          type={field.type}
+                          name={field.name}
+                          onChange={handleFileChange} // Fallback to general handleChange
+                          required={field.required}
+                          accept={field.accept}
+                          multiple={field.multiple || false} // 👈 Add this line
+                        />
+                        {formErrors[field.name] && (
+                          <p
+                            className="text-danger"
+                            style={{ fontSize: "11px", marginBottom: "0px" }}
+                          >
+                            {formErrors[field.name]}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
                       <FormGroup
-                      label={field.required ? `${field.label} *` : field.label}
+                        label={
+                          field.required ? `${field.label} *` : field.label
+                        }
                         type={field.type}
                         name={field.name}
                         value={formData[field.name]}
@@ -263,15 +348,47 @@ const GenericForm = ({
                       />
                     )}
                     {formErrors[field.name] && (
-                      <p className="text-danger" style={{ fontSize: "11px", marginBottom: "0px" }}>
+                      <p
+                        className="text-danger"
+                        style={{ fontSize: "11px", marginBottom: "0px" }}
+                      >
                         {formErrors[field.name]}
                       </p>
                     )}
                   </div>
                 ))}
               </div>
-              <div className="w-25">
+              {/* <div className="w-25">
                 {imagePreview && <img src={imagePreview} alt="Preview" className="img-fluid mt-2" />}
+              </div> */}
+
+              {/* Single preview (e.g., for photo) */}
+              {previews.photo && (
+                <div className="lo">
+                  <h6>logo </h6>
+                  <img src={previews.photo} alt="Photo Preview" width="100" />
+                </div>
+              )}
+              {previews.logo && (
+                <div className="lo">
+                  <h6>logo </h6>
+                  <img src={previews.logo} alt="Photo Preview" width="100" />
+                </div>
+              )}
+
+              <div className="multiple">
+                {previews.documents && previews.documents.length > 0 && (
+                  <h6>Documents</h6>
+                )}
+
+                {previews.documents &&
+                  previews.documents.map((src, i) =>
+                    src ? (
+                      <img key={i} src={src} alt={`Doc ${i}`} width="100" />
+                    ) : (
+                      <p key={i}>PDF File</p>
+                    )
+                  )}
               </div>
 
               {success && <p className="text-success">{success}</p>}

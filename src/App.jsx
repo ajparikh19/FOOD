@@ -14,8 +14,11 @@ import Clients from "./pages/Clients";
 import AddClient from "./pages/Clients/AddClients";
 import ViewClient from "./pages/Clients/ViewClient";
 
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 import AddCompany from "./pages/Company/companyAdd";
+import Company from "./pages/Company/view";
+import Subscriptions from "./pages/subscriptions";
+import AddSubscription from "./pages/subscriptions/AddSubscriptionPlan";
 
 const withPrivateRoute = (Component) => (
   <PrivateRoute>
@@ -28,7 +31,7 @@ const withPrivateRoute = (Component) => (
 export default function App() {
   return (
     <BrowserRouter>
-    <ToastContainer />
+      <ToastContainer />
       <Routes>
         {/* {/* Redirect all unknown routes to the login page /} */}
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -65,7 +68,6 @@ export default function App() {
           element={withPrivateRoute(ViewClient)}
           exact
         />
-     
 
         {/* ================ Compney ===================== */}
         <Route
@@ -73,7 +75,34 @@ export default function App() {
           element={withPrivateRoute(AddCompany)}
           exact
         />
+        <Route
+          path={routes.Companies}
+          element={withPrivateRoute(Company)}
+          exact
+        />
+        <Route
+          path={routes.EditCompany}
+          element={withPrivateRoute(AddCompany)}
+          exact
+        />
 
+        {/* //  ========================= Subscription ===================== */}
+        <Route
+          path={routes.Subscriptions}
+          element={withPrivateRoute(Subscriptions)}
+          exact
+        />
+        <Route
+          path={routes.AddSubscription}
+          element={withPrivateRoute(AddSubscription)}
+          exact
+        />
+        <Route
+          path={routes.EditSubscription}
+          element={withPrivateRoute(AddSubscription)}
+          exact
+        />
+        
       </Routes>
     </BrowserRouter>
   );

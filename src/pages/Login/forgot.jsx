@@ -19,6 +19,7 @@ const loginValidationSchema = yup.object().shape({
   password: yup.string().required("Password is required.").max(42),
 });
 
+const email = localStorage.getItem("email");
 export default function Forgot() {
   useDocumentTitle(`Login`);
   // const { hasPermission, updateUserRole } = useUserRole();
@@ -96,6 +97,7 @@ export default function Forgot() {
                         id="email"
                         placeholder="Email"
                         {...register("email")}
+                        value={email}
                         maxLength={42}
                       />
                       {errors.email?.message != undefined && (
@@ -103,39 +105,7 @@ export default function Forgot() {
                       )}
                     </div>
 
-                    {/* password */}
-                    <div className="col-xl-12 mb-3">
-                      <label htmlFor="password" className="form-label text-default d-block">Password</label>
-                      <div className="input-group">
-                        <input
-                          type={passwordVisible ? "text" : "password"}
-                          className="form-control form-control-lg"
-                          id="password"
-                          placeholder="Password"
-                          {...register("password")}
-                          maxLength={42}
-                        />
-                        <button
-                          className="btn btn-light"
-                          type="button"
-                          onClick={togglePasswordVisibility}
-                          id="button-addon2"
-                        >
-                          <i className={passwordVisible ? "ri-eye-line align-middle" : "ri-eye-off-line align-middle"} />
-                        </button>
-                      </div>
-                      {errors.password?.message != undefined && (
-                        <span className="error mt-2 text-danger d-block">{errors.password?.message}</span>
-                      )}
-
-                      {/* remember password */}
-                      <div className="mt-2">
-                        <div className="form-check">
-                      
-                          <label className="form-check-label text-muted fw-normal" onClick={() => { navigate(routes.ForgotPassword); }}>Back To Login</label>
-                        </div>
-                      </div>
-                    </div>
+                   
 
                     <div className="col-xl-12 d-grid mt-2">
                       <button type="submit" className="btn btn-primary mx-auto" disabled={loading}>

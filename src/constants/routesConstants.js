@@ -24,9 +24,12 @@ const routes = {
   AddCompany: "/companies/add/:clientId",
   EditCompany: "/companies/edit/:id",
 
+
   //============================ Subscription ==============================
   Subscriptions: "/subscriptions",
   AddSubscription: "/subscriptions/add",
   EditSubscription: "/subscriptions/edit/:id",
+  ViewSubscription: "/subscriptions/view/:id",
+
 };
 export default routes;

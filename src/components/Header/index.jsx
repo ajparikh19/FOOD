@@ -117,7 +117,7 @@ export default function Header() {
                 </div>
                 <div className="d-sm-block d-none">
                   {/* <p className="fw-semibold mb-0 lh-1">{name}</p> */}
-                  <p className="fw-semibold mb-0 lh-1">Stvya Hospital</p>
+                  <p className="fw-semibold mb-0 lh-1">ERP FOOD</p>
                   {/* <span className="op-7 fw-normal d-block fs-11">{role}</span>
                   <p className="fw-semibold mb-0 lh-1">{user.name}</p> */}
                   {/* <span className="op-7 fw-normal d-block fs-11">{user.Roles}</span> */}

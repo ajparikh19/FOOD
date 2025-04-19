@@ -51,6 +51,7 @@ export const AuthContextProvider = (props) => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("x-token-appointment");
+    // localStorage.removeItem("email");
     sessionStorage.clear();
     window.location.href = "/";
   };
@@ -85,9 +86,9 @@ export const AuthContextProvider = (props) => {
       return;
     }
     
-
     try {
       localStorage.setItem("x-token-appointment", data?.accessToken);
+      localStorage.setItem("email", data?.user?.email);
 
       setIsLoggedIn(true);
     } catch (error) {

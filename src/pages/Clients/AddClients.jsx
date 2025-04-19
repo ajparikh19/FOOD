@@ -21,7 +21,8 @@ export default function ClientCreate() {
   const { id: clientId } = useParams();
   const isEditMode = !!clientId;
 
-  const [loading, setLoading] = useState(false);
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [citiesLoading, setCitiesLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -29,7 +30,9 @@ export default function ClientCreate() {
   const [cities, setCities] = useState([]);
 
   // Initial form state
-  const initialState = {
+
+
+  const [formData, setFormData] = useState({
     fullName: "",
     pincode: "",
     email: "",
@@ -42,23 +45,21 @@ export default function ClientCreate() {
     anniversaryDate: "",
     state: "",
     city: "",
-  };
-
-  const [formData, setFormData] = useState(initialState);
+  });
 
   // Fetch client details for editing
   useEffect(() => {
     if (clientId) {
       const fetchDetails = async () => {
-        setLoading(true);
+        setFormSubmitting(true);
         try {
           const { data, error } = await fetchEntityDetails("client", clientId);
 
           if (error) {
             setError(error);
           } else if (data) {
-            setFormData({
-              ...initialState,
+            setFormData((prev) => ({
+              ...prev,
               ...data,
               birthDate: data.birthDate?.split("T")[0] || "",
               anniversaryDate: data.anniversaryDate?.split("T")[0] || "",
@@ -67,14 +68,14 @@ export default function ClientCreate() {
               photo: null,
               gender: data.gender || "Male",
               maritalStatus: data.maritalStatus || "Single",
-            });
+            }));
 
             if (data.photoUrl) setPhotoPreview(data.photoUrl);
           }
         } catch (error) {
           toast.error("Failed to fetch client data");
         } finally {
-          setLoading(false);
+          setFormSubmitting(false);
         }
       };
 
@@ -87,39 +88,41 @@ export default function ClientCreate() {
       .then((res) => setStates(res.data || []))
       .catch(() => toast.error("Failed to load states"));
   }, []);
-
   useEffect(() => {
-    if (formData?.state) {
-      setLoading(true);
-      API.get(`locations/states/${formData?.state}/cities`)
-        .then((res) => {
-          console.log("Cities API Response:", res.data);
-          const citiesData = res.data?.data?.data || res.data?.data || [];
-          
-          const cityOptions = citiesData.map(city => {
-            if (!city) return null;
-            return {
-              value: city.cityId ? String(city.cityId) : '',
-              label: city.name || 'Unknown City'
-            };
-          }).filter(Boolean);
-          
-          setCities(cityOptions);
-        })
-        .catch(() => {
-          toast.error("Failed to load cities");
-          setCities([]);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setCities([]);
-    }
-  }, [formData.state]);
+    const fetchCities = async () => {
+      if (!formData?.state) {
+        setCities([]);
+        return;
+      }
+
+      setCitiesLoading(true);
+      try {
+        const res = await API.get(`locations/states/${formData.state}/cities`);
+
+        const citiesData = res.data?.data || [];
+
+        setCities(citiesData);
+      } catch (error) {
+        toast.error("Failed to load cities");
+        setCities([]);
+      } finally {
+        setCitiesLoading(false);
+      }
+    };
+
+    fetchCities();
+  }, [formData?.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value ,
+      ...(name === "state" && { city: "" }),
+    }));
   };
+  // const handleChange2 = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, city: value }));
+  // };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -127,7 +130,7 @@ export default function ClientCreate() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result);
-        setFormData(prev => ({ ...prev, photo: file }));
+        setFormData((prev) => ({ ...prev, photo: file }));
       };
       reader.readAsDataURL(file);
     }
@@ -148,7 +151,7 @@ export default function ClientCreate() {
       name: "email",
       value: formData.email,
       required: !isEditMode,
-      validation: (v) => v ? validateEmail(v) : !isEditMode,
+      validation: (v) => (v ? validateEmail(v) : !isEditMode),
     },
     {
       label: "Phone Number",
@@ -156,7 +159,18 @@ export default function ClientCreate() {
       name: "phoneNumber",
       value: formData.phoneNumber,
       required: !isEditMode,
-      validation: (v) => v ? validatePhone(v) : !isEditMode,
+      validation: (v) => {
+        if (!v && !isEditMode) return "Phone number is required";
+        if (v) {
+          if (!/^\d+$/.test(v)) return "Only numbers are allowed";
+          if (v.length !== 10) return "Must be exactly 10 digits";
+        }
+        return null;
+      },
+      inputProps: {
+        pattern: "[0-9]*",
+        inputMode: "numeric"
+      }
     },
     {
       label: "Gender",
@@ -210,13 +224,14 @@ export default function ClientCreate() {
       label: "City",
       type: "select",
       name: "city",
-      value: formData.city,
+       value: formData.city,
       component: (
         <SelectCity
           cities={cities || []}
           value={formData.city}
           onChange={handleChange}
           disabled={!formData.state}
+          loading={citiesLoading}
         />
       ),
     },
@@ -226,7 +241,19 @@ export default function ClientCreate() {
       name: "pincode",
       value: formData.pincode,
       required: !isEditMode,
-      validation: (v) => validateRequired(v, "Pincode") && /^\d{6}$/.test(v),
+      validation: (v) => {
+        if (!v && !isEditMode) return "Pincode is required";
+        if (v) {
+          if (!/^\d+$/.test(v)) return "Only numbers are allowed";
+          if (v.length !== 6) return "Must be 6 digits";
+        }
+        return null;
+      },
+      inputProps: {
+        pattern: "[0-9]*",
+        inputMode: "numeric",
+        maxLength: 6
+      }
     },
     {
       label: "Profile Photo",
@@ -239,24 +266,39 @@ export default function ClientCreate() {
   ];
 
   const handleSubmit = async (data) => {
-    setLoading(true);
+    setFormSubmitting(true);
     setError(null);
     setSuccess(null);
+    
 
     try {
       const formDataToSend = new FormData();
 
-      // Append all form data
-      Object.entries(data).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          formDataToSend.append(key, value);
-        }
-      });
+      formDataToSend.append("fullName", data.fullName || "");
+      formDataToSend.append("pincode", data.pincode || "");
+      formDataToSend.append("email", data.email || "");
+      formDataToSend.append("phoneNumber", data.phoneNumber || "");
+      formDataToSend.append("address", data.address || "");
+      formDataToSend.append("gender", data.gender || "Male");
+      formDataToSend.append(
+        "maritalStatus",
+        data.maritalStatus || "Single"
+      );
+      formDataToSend.append("birthDate", data.birthDate || "");
+      formDataToSend.append("anniversaryDate", data.anniversaryDate || "");
+      formDataToSend.append("state", formData?.state || "");
+      formDataToSend.append("city", formData?.city || "");
 
-      // Append the photo file separately
-      if (formData.photo) {
-        formDataToSend.append("photo", formData.photo);
+      // const jsonData = {
+      //   ...formData,
+      //   photo: undefined, // Exclude photo from JSON data
+      // }
+      // formDataToSend.append("data", JSON.stringify(jsonData));
+
+      if (data.photo instanceof File) {
+        formDataToSend.append("photo", data.photo);
       }
+
 
       const endpoint = clientId ? `client/${clientId}` : "client";
       const method = clientId ? "put" : "post";
@@ -264,10 +306,25 @@ export default function ClientCreate() {
       const response = await API[method](endpoint, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      
 
       if (response.status === 200 || response.status === 201) {
         toast.success(response?.message || "Operation successful");
-        setFormData(initialState);
+        setFormData({
+          fullName: "",
+          pincode: "",
+          email: "",
+          phoneNumber: "",
+          address: "",
+          photo: null,
+          gender: "Male",
+          maritalStatus: "Single",
+          birthDate: "",
+          anniversaryDate: "",
+          state: "",
+          city: "",
+        });
+      
         setPhotoPreview(null);
         navigate(routes.Clients);
       } else {
@@ -277,30 +334,31 @@ export default function ClientCreate() {
       toast.error(err.message || "An error occurred");
       setError(err.message || "An error occurred");
     } finally {
-      setLoading(false);
+      setFormSubmitting(false);
     }
   };
 
-  const title = clientId ? "Edit Client" : "Add Client";
-  const buttonLabel = loading 
-    ? (clientId ? "Updating..." : "Adding...")
-    : (clientId ? "Update" : "Save");
+  // const title = clientId ? "Edit Client" : "Add Client";
+  // const buttonLabel = loading
+  //   ? clientId
+  //     ? "Updating..."
+  //     : "Adding..."
+  //   : clientId
+  //   ? "Update"
+  //   : "Save";
 
-  return (
-    <div>
-      <ToastContainer />
-      {loading ? (
-        <Loader />
-      ) : (
+    return (
+      <div>
+        <ToastContainer />
         <GenericForm
-          title={title}
+          title={clientId ? "Edit Client" : "Add Client"}
           fields={formFields}
           onSubmit={handleSubmit}
-          buttonLabel={buttonLabel}
+          buttonLabel={formSubmitting ? (clientId ? "Updating..." : "Adding...") : (clientId ? "Update" : "Save")}
           data={formData}
+          loading={formSubmitting}
           onChange={handleChange}
         />
-      )}
-    </div>
-  );
+      </div>
+    );
 }

@@ -1,15 +1,17 @@
 import React from "react";
 import Select from "react-dropdown-select";
 
+
 const SelectCity = ({ cities, value, onChange, disabled }) => {
   // Convert cities array into react-dropdown-select format
   const cityOptions = cities?.map((city) => ({
-    value: city?.id,
+    value: city?.cityId,
     label: city?.name,
-  }));
+  }
+));
 
-  // Find the selected option
-  const selectedOption = cityOptions.find((option) => option.value ===  parseInt(value));
+  // Find the selected optiona
+  const selectedOption = cityOptions.find( (option) => `${option.value}` === `${value}`);
 
   const handleChange = (selected) => {
     const selectedValue = selected.length > 0 ? selected[0].value : "";
